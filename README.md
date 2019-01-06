@@ -5,6 +5,14 @@ MS Windows TTS console app
 
 ## Usage
 ```
+  speak -t "Let's dive in." - Speak text with default system voice.
+  speak -t "Let's dive in." -v "Microsoft David Desktop" - Speak text using MS David.
+  speak -l - List available system voices.
+  speak -i "Microsoft David Desktop" - Show detailed information about MS David voice.
+```
+
+## Help
+```
   -l, --list     Get list available voices.  
   -i, --info     Get detailed information about voice.  
   -t, --text     Text to speak.  
