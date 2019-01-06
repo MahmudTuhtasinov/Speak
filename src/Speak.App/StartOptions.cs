@@ -15,5 +15,11 @@ namespace Speak.App
 
         [Option('v', "voice", SetName = "Speak", HelpText = "Select voice.")]
         public string Voice { get; set; }
+
+        [Option('h', "volume", SetName = "Speak", Default = 100, HelpText = "Set voice volume. Values: [0; 100]. Default: 100.")]
+        public int Volume { get; set; }
+
+        [Option('r', "rate", SetName = "Speak", Default = 0, HelpText = "Set voice rate. Values: [-10; 10]. Default 0.")]
+        public int Rate { get; set; }
     }
 }

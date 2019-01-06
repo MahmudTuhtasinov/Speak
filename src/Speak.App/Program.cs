@@ -38,13 +38,16 @@ namespace Speak.App
                             SelectVoiceByName(startOptions.Voice);
                         }
 
+                        SpeechSynthesizer.Volume = startOptions.Volume;
+                        SpeechSynthesizer.Rate = startOptions.Rate;
+                        
                         SpeechSynthesizer.SetOutputToDefaultAudioDevice();
                         SpeechSynthesizer.Speak(startOptions.Text);
 
                         return;
                     }
 
-                    Console.WriteLine(HelpText.AutoBuild<StartOptions>(parserResult, null, null));
+                    Console.WriteLine(HelpText.AutoBuild(parserResult, null, null));
                 });
         }
 

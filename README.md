@@ -9,6 +9,8 @@ MS Windows TTS console app
   -i, --info     Get detailed information about voice.  
   -t, --text     Text to speak.  
   -v, --voice    Select voice.  
+  -h, --volume    (Default: 100) Set voice volume. Values: [0; 100]. Default: 100.  
+  -r, --rate      (Default: 0) Set voice rate. Values: [-10; 10]. Default 0.  
   --help         Display this help screen.  
-  --version      Display version information.  
+  --version      Display version information.
 ```
