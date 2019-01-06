@@ -1,0 +1,104 @@
+﻿using System;
+using System.Linq;
+using System.Speech.Synthesis;
+using CommandLine;
+using CommandLine.Text;
+
+namespace Speak.App
+{
+    class Program
+    {
+        private static readonly SpeechSynthesizer SpeechSynthesizer = new SpeechSynthesizer();
+
+        static void Main(string[] args)
+        {
+            var parserResult = Parser.Default.ParseArguments<StartOptions>(args);
+            parserResult.WithParsed(startOptions =>
+                {
+                    if (startOptions.VoicesList)
+                    {
+                        PrintVoicesList();
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(startOptions.VoiceInfo))
+                    {
+                        if (SelectVoiceByName(startOptions.VoiceInfo))
+                        {
+                            PrintDetailedVoiceInfo();
+                        }
+
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(startOptions.Text))
+                    {
+                        if (!string.IsNullOrEmpty(startOptions.Voice))
+                        {
+                            SelectVoiceByName(startOptions.Voice);
+                        }
+
+                        SpeechSynthesizer.SetOutputToDefaultAudioDevice();
+                        SpeechSynthesizer.Speak(startOptions.Text);
+
+                        return;
+                    }
+
+                    Console.WriteLine(HelpText.AutoBuild<StartOptions>(parserResult, null, null));
+                });
+        }
+
+        private static void PrintVoicesList()
+        {
+            foreach (var installedVoice in SpeechSynthesizer.GetInstalledVoices())
+            {
+                PrintShortVoiceInfo(installedVoice.VoiceInfo);
+            }
+        }
+
+        private static void PrintShortVoiceInfo(VoiceInfo voiceInfo)
+        {
+            Console.WriteLine($"Voice name: '{voiceInfo.Name}'");
+        }
+
+        private static void PrintDetailedVoiceInfo(VoiceInfo voiceInfo = null)
+        {
+            if (voiceInfo == null)
+            {
+                voiceInfo = SpeechSynthesizer.Voice;
+            }
+
+            Console.WriteLine($"Voice name: '{voiceInfo.Name}'");
+            Console.WriteLine($"Description: '{voiceInfo.Description}'");
+            Console.WriteLine($"Gender: '{voiceInfo.Gender}'");
+            Console.WriteLine($"Age: '{voiceInfo.Age}'");
+            Console.WriteLine($"Culture: '{voiceInfo.Culture}'");
+            if (voiceInfo.AdditionalInfo.Any())
+            {
+                Console.WriteLine("Additional information:");
+                foreach (var additionalInfo in voiceInfo.AdditionalInfo)
+                {
+                    Console.WriteLine($"\t{additionalInfo.Key}: '{additionalInfo.Value}'");
+                }
+            }
+        }
+
+        private static bool SelectVoiceByName(string voiceName)
+        {
+            try
+            {
+                SpeechSynthesizer.SelectVoice(voiceName);
+                Console.WriteLine($"Selected voice '{voiceName}'.");
+
+                return true;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Voice with name '{voiceName}' not found.");
+                Console.WriteLine($"Selected voice '{SpeechSynthesizer.Voice.Name}'.");
+
+                return false;
+            }
+        }
+    }
+}
