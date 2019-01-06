@@ -4,9 +4,11 @@
 MS Windows TTS console app
 
 ## Usage
+```
   -l, --list     Get list available voices.  
   -i, --info     Get detailed information about voice.  
   -t, --text     Text to speak.  
   -v, --voice    Select voice.  
   --help         Display this help screen.  
   --version      Display version information.  
+```
