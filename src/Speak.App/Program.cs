@@ -49,6 +49,7 @@ namespace Speak.App
 
                     Console.WriteLine(HelpText.AutoBuild(parserResult, null, null));
                 });
+            Console.ReadLine();
         }
 
         private static void PrintVoicesList()
