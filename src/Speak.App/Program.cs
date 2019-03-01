@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Speech.Synthesis;
-using CommandLine;
-using CommandLine.Text;
-
+using System.IO;
 namespace Speak.App
 {
     class Program
@@ -12,97 +10,48 @@ namespace Speak.App
 
         static void Main(string[] args)
         {
-            var parserResult = Parser.Default.ParseArguments<StartOptions>(args);
-            parserResult.WithParsed(startOptions =>
+            string[] filePath = File.ReadAllLines("d:\\1.txt");
+            string[] filePath1 = File.ReadAllLines("d:\\1.txt");
+
+            SpeechSynthesizer speechSynth = new SpeechSynthesizer();
+            speechSynth.Volume = 100;
+            speechSynth.Rate = -6;
+
+            Random rand = new Random();
+            int a, o = 0, n = 0;
+            for (int i = 0; i < filePath.Length; i++)
+            {
+                a = rand.Next(0, filePath.Length);
+
+                if (filePath[a] != "0")
                 {
-                    if (startOptions.VoicesList)
+                    speechSynth.Speak(filePath[a]);
+
+                    for (int j = 0; j < 3; j++)
                     {
-                        PrintVoicesList();
-                        return;
+                        Console.WriteLine(j + 1 + ") " + filePath1[a]);
+                        a = rand.Next(0, filePath.Length);
                     }
 
-                    if (!string.IsNullOrEmpty(startOptions.VoiceInfo))
+                    int c = Convert.ToInt32(Console.ReadLine());
+                    if (c == 1)
                     {
-                        if (SelectVoiceByName(startOptions.VoiceInfo))
-                        {
-                            PrintDetailedVoiceInfo();
-                        }
-
-                        return;
+                        Console.WriteLine("Ok");
+                        o++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Not");
+                        n++;
                     }
 
-                    if (!string.IsNullOrEmpty(startOptions.Text))
-                    {
-                        if (!string.IsNullOrEmpty(startOptions.Voice))
-                        {
-                            SelectVoiceByName(startOptions.Voice);
-                        }
-
-                        SpeechSynthesizer.Volume = startOptions.Volume;
-                        SpeechSynthesizer.Rate = startOptions.Rate;
-                        
-                        SpeechSynthesizer.SetOutputToDefaultAudioDevice();
-                        SpeechSynthesizer.Speak(startOptions.Text);
-
-                        return;
-                    }
-
-                    Console.WriteLine(HelpText.AutoBuild(parserResult, null, null));
-                });
-            Console.ReadLine();
-        }
-
-        private static void PrintVoicesList()
-        {
-            foreach (var installedVoice in SpeechSynthesizer.GetInstalledVoices())
-            {
-                PrintShortVoiceInfo(installedVoice.VoiceInfo);
-            }
-        }
-
-        private static void PrintShortVoiceInfo(VoiceInfo voiceInfo)
-        {
-            Console.WriteLine($"Voice name: '{voiceInfo.Name}'");
-        }
-
-        private static void PrintDetailedVoiceInfo(VoiceInfo voiceInfo = null)
-        {
-            if (voiceInfo == null)
-            {
-                voiceInfo = SpeechSynthesizer.Voice;
-            }
-
-            Console.WriteLine($"Voice name: '{voiceInfo.Name}'");
-            Console.WriteLine($"Description: '{voiceInfo.Description}'");
-            Console.WriteLine($"Gender: '{voiceInfo.Gender}'");
-            Console.WriteLine($"Age: '{voiceInfo.Age}'");
-            Console.WriteLine($"Culture: '{voiceInfo.Culture}'");
-            if (voiceInfo.AdditionalInfo.Any())
-            {
-                Console.WriteLine("Additional information:");
-                foreach (var additionalInfo in voiceInfo.AdditionalInfo)
-                {
-                    Console.WriteLine($"\t{additionalInfo.Key}: '{additionalInfo.Value}'");
+                    filePath[a] = "0";
                 }
             }
+            Console.WriteLine("Ok = " + o + " Not = " + n);
+
+            Console.ReadKey();
         }
 
-        private static bool SelectVoiceByName(string voiceName)
-        {
-            try
-            {
-                SpeechSynthesizer.SelectVoice(voiceName);
-                Console.WriteLine($"Selected voice '{voiceName}'.");
-
-                return true;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine($"Voice with name '{voiceName}' not found.");
-                Console.WriteLine($"Selected voice '{SpeechSynthesizer.Voice.Name}'.");
-
-                return false;
-            }
-        }
     }
 }
